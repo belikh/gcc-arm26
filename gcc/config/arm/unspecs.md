@@ -148,6 +148,8 @@
   UNSPEC_VCDEA		; Custom Datapath Extension instruction.
   UNSPEC_DLS		; Used for DLS (Do Loop Start), Armv8.1-M Mainline instruction
   UNSPEC_PAC_NOP	; Represents PAC signing LR
+  UNSPEC_ARM2_RETURN	; ARMv2 return with flag restoration
+  UNSPEC_TEQP		; TEQP instruction
 ])
 
 
