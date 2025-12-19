@@ -48,6 +48,9 @@
 
 # Features - general convention: all lower case.
 
+# Architecture rel 2
+define feature armv2
+
 # Architecture rel 4
 define feature armv4
 
@@ -262,6 +265,7 @@ define fgroup ALL_FPU_EXTERNAL fp16 bf16
 # Everything related to the FPU extensions (FP or SIMD).
 define fgroup ALL_FP	ALL_FPU_EXTERNAL ALL_FPU_INTERNAL ALL_SIMD
 
+define fgroup ARMv2         armv2
 define fgroup ARMv4         armv4 notm
 define fgroup ARMv4t        ARMv4 thumb
 define fgroup ARMv5t        ARMv4t armv5t
@@ -344,6 +348,13 @@ define fgroup IGNORE_FOR_MULTILIB cdecp0 cdecp1 cdecp2 cdecp3 cdecp4 cdecp5 cdec
 #   isa <isa-flags-list>
 # end arch <name>
 #
+
+begin arch armv2
+  tune for arm2
+  tune flags LDSCHED NO_LDRH
+  base 2
+  isa ARMv2
+end arch armv2
 
 begin arch armv4
  tune for arm7tdmi
@@ -823,6 +834,20 @@ end arch iwmmxt2
 # Revision information is not implemented yet; no part uses it.
 
 # V4 Architecture Processors
+begin cpu arm2
+  cname arm2
+  tune flags LDSCHED NO_LDRH
+  architecture armv2
+  costs arm2
+end cpu arm2
+
+begin cpu arm250
+  cname arm250
+  tune flags LDSCHED NO_LDRH
+  architecture armv2
+  costs arm2
+end cpu arm250
+
 begin cpu arm8
  tune flags LDSCHED
  architecture armv4
