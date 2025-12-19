@@ -79,6 +79,11 @@
   (const (if_then_else (symbol_ref "TARGET_THUMB")
 		       (const_string "yes") (const_string "no"))))
 
+; IS_ARM2 is set to 'yes' when we are generating code for ARMv2.
+(define_attr "is_arm2" "yes,no"
+  (const (if_then_else (symbol_ref "TARGET_26BIT")
+		       (const_string "yes") (const_string "no"))))
+
 ; IS_ARCH6 is set to 'yes' when we are generating code form ARMv6.
 (define_attr "is_arch6" "no,yes" (const (symbol_ref "arm_arch6")))
 
@@ -9620,6 +9625,52 @@
 
 
 ;; Misc insns
+
+(define_insn "arm2_return_simple"
+  [(return)
+   (use (reg:CC CC_REGNUM))
+   (unspec_volatile [(const_int 0)] UNSPEC_ARM2_RETURN)]
+  "TARGET_26BIT"
+  "movs%?\\t%|pc, %|lr"
+  [(set_attr "type" "branch")
+   (set_attr "conds" "clob")
+   (set_attr "length" "4")]
+)
+
+(define_insn "arm2_return_pop"
+  [(match_parallel 0 "pop_multiple_return"
+    [(return)
+     (set (match_operand:SI 2 "s_register_operand" "=rk")
+          (mem:SI (match_operand:SI 1 "s_register_operand" "rk")))
+        ])
+   (use (reg:CC CC_REGNUM))
+   (unspec_volatile [(const_int 0)] UNSPEC_ARM2_RETURN)]
+  "TARGET_26BIT && (reload_in_progress || reload_completed)"
+  "*
+  {
+    arm_output_multireg_pop (operands, /*return_pc=*/true,
+                                       /*cond=*/const_true_rtx,
+                                       /*reverse=*/false,
+                                       /*update=*/false);
+    return \"\";
+  }
+  "
+  [(set_attr "type" "load_16")
+   (set_attr "predicable" "yes")
+   (set (attr "length")
+	(symbol_ref "arm_attr_length_pop_multi (operands, /*return_pc=*/true,
+						/*write_back_p=*/false)"))]
+)
+
+(define_insn "teqp"
+  [(unspec_volatile [(match_operand:SI 0 "s_register_operand" "r")
+                     (match_operand:SI 1 "arm_immediate_operand" "I")]
+                    UNSPEC_TEQP)]
+  "TARGET_26BIT"
+  "teqp%?\\t%0, %1"
+  [(set_attr "type" "alu_imm")]
+)
+
 
 (define_insn "nop"
   [(const_int 0)]
