@@ -1894,6 +1894,28 @@ const struct tune_params arm_slowmul_tune =
   tune_params::SCHED_AUTOPREF_OFF
 };
 
+const struct tune_params arm_arm2_tune =
+{
+  &generic_extra_costs,			/* Insn extra costs.  */
+  &generic_addr_mode_costs,		/* Addressing mode costs.  */
+  NULL,					/* Sched adj cost.  */
+  arm_default_branch_cost,
+  &arm_default_vec_cost,
+  1,						/* Constant limit.  */
+  3,						/* Max cond insns.  */
+  8,						/* Memset max inline.  */
+  1,						/* Issue rate.  */
+  ARM_PREFETCH_NOT_BENEFICIAL,
+  tune_params::PREF_CONST_POOL_TRUE,
+  tune_params::PREF_LDRD_FALSE,
+  tune_params::LOG_OP_NON_SHORT_CIRCUIT_TRUE,		/* Thumb.  */
+  tune_params::LOG_OP_NON_SHORT_CIRCUIT_TRUE,		/* ARM.  */
+  tune_params::DISPARAGE_FLAGS_NEITHER,
+  tune_params::PREF_NEON_STRINGOPS_FALSE,
+  tune_params::FUSE_NOTHING,
+  tune_params::SCHED_AUTOPREF_OFF
+};
+
 const struct tune_params arm_fastmul_tune =
 {
   &generic_extra_costs,			/* Insn extra costs.  */

@@ -1,7 +1,5 @@
-/* Flags used to identify the presence of processor capabilities.
-
-   Copyright (C) 2016-2025 Free Software Foundation, Inc.
-   Contributed by ARM Ltd.
+/* Definitions of target machine for GNU compiler, for ARM targeting RISC OS.
+   Copyright (C) 2025 Free Software Foundation, Inc.
 
    This file is part of GCC.
 
@@ -19,18 +17,14 @@
    along with GCC; see the file COPYING3.  If not see
    <http://www.gnu.org/licenses/>.  */
 
-#ifndef GCC_ARM_FLAGS_H
-#define GCC_ARM_FLAGS_H
+#undef SUBTARGET_CPP_SPEC
+#define SUBTARGET_CPP_SPEC "-D__riscos__ -D__arm2__"
 
-/* Flags used to identify a few tuning properties.  These are for legacy
-   purposes only.  Do not add any more of these: use the main tuning tables.  */
-#define TF_LDSCHED	(1U << 0)
-#define TF_WBUF		(1U << 1)
-#define TF_CO_PROC	(1U << 2)
-#define TF_SMALLMUL	(1U << 3)
-#define TF_STRONG	(1U << 4)
-#define TF_XSCALE	(1U << 5)
-#define TF_NO_MODE32	(1U << 6)
-#define TF_NO_LDRH	(1U << 7)
+#undef LINK_SPEC
+#define LINK_SPEC "%{m26bit:-m armelf_riscos} %{!m26bit:-m armelf}"
 
-#endif /* GCC_ARM_FLAGS_H */
+#undef STARTFILE_SPEC
+#define STARTFILE_SPEC "crt0.o%s"
+
+#undef ENDFILE_SPEC
+#define ENDFILE_SPEC ""

@@ -153,6 +153,7 @@ emission of floating point pcs attributes.  */
 #define TARGET_THUMB1			(TARGET_THUMB && !arm_arch_thumb2)
 /* Arm or Thumb-2 32-bit code.  */
 #define TARGET_32BIT			(TARGET_ARM || arm_arch_thumb2)
+#define TARGET_26BIT			(arm_base_arch == BASE_ARCH_2)
 /* 32-bit Thumb-2 code.  */
 #define TARGET_THUMB2			(TARGET_THUMB && arm_arch_thumb2)
 /* Thumb-1 only.  */
@@ -160,6 +161,9 @@ emission of floating point pcs attributes.  */
 
 #define TARGET_LDRD			(arm_arch5te && ARM_DOUBLEWORD_ALIGN \
                                          && !TARGET_THUMB1)
+
+#define TARGET_HAVE_LDRH		(arm_arch4 && !TARGET_26BIT)
+#define TARGET_HAVE_BX			(arm_arch4t && !TARGET_26BIT)
 
 #define TARGET_CRC32			(arm_arch_crc)
 

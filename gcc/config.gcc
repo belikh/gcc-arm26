@@ -1496,6 +1496,11 @@ arm*-*-linux-* | arm*-*-uclinuxfdpiceabi)
 	default_use_cxa_atexit=yes
 	with_tls=${with_tls:-gnu}
 	;;
+arm*-*-riscos*)
+	tm_file="arm/elf.h arm/aout.h arm/arm.h arm/riscos.h"
+	tmake_file="arm/t-arm arm/t-riscos"
+	target_cpu_cname="arm2"
+	;;
 arm*-*-uclinux*eabi*)		# ARM ucLinux
 	tm_file="elfos.h arm/unknown-elf.h arm/elf.h arm/linux-gas.h arm/uclinux-elf.h glibc-stdint.h"
 	tmake_file="${tmake_file} arm/t-arm arm/t-arm-elf arm/t-bpabi"
