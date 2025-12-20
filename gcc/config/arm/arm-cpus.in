@@ -51,6 +51,9 @@
 # Architecture rel 2
 define feature armv2
 
+# FPA support
+define feature fpa
+
 # Architecture rel 4
 define feature armv4
 
@@ -257,7 +260,7 @@ define fgroup ALL_SIMD	ALL_SIMD_INTERNAL ALL_SIMD_EXTERNAL
 
 # List of all FPU bits to strip out if -mfpu is used to override the
 # default.  fp16 is deliberately missing from this list.
-define fgroup ALL_FPU_INTERNAL	vfpv2 vfpv3 vfpv4 fpv5 fp16conv fp_dbl ALL_SIMD_INTERNAL
+define fgroup ALL_FPU_INTERNAL	fpa vfpv2 vfpv3 vfpv4 fpv5 fp16conv fp_dbl ALL_SIMD_INTERNAL
 # Similarly, but including fp16 and other extensions that aren't part of
 # -mfpu support.
 define fgroup ALL_FPU_EXTERNAL fp16 bf16
@@ -838,6 +841,8 @@ begin cpu arm2
   cname arm2
   tune flags LDSCHED NO_LDRH
   architecture armv2
+  fpu fpa
+  option nofp remove ALL_FP
   costs arm2
 end cpu arm2
 
@@ -845,6 +850,8 @@ begin cpu arm250
   cname arm250
   tune flags LDSCHED NO_LDRH
   architecture armv2
+  fpu fpa
+  option nofp remove ALL_FP
   costs arm2
 end cpu arm250
 
@@ -1751,6 +1758,10 @@ end cpu cortex-r52plus
 # begin fpu <name>
 #   isa <isa-flags-list>
 # end fpu <name>
+
+begin fpu fpa
+  isa fpa
+end fpu fpa
 
 begin fpu vfp
  isa VFPv2 FP_DBL
