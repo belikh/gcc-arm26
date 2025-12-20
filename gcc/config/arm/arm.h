@@ -152,8 +152,8 @@ emission of floating point pcs attributes.  */
 /* Only 16-bit thumb code.  */
 #define TARGET_THUMB1			(TARGET_THUMB && !arm_arch_thumb2)
 /* Arm or Thumb-2 32-bit code.  */
-#define TARGET_32BIT			(TARGET_ARM || arm_arch_thumb2)
 #define TARGET_26BIT			(arm_base_arch == BASE_ARCH_2)
+#define TARGET_32BIT			(!TARGET_26BIT && (TARGET_ARM || arm_arch_thumb2))
 /* 32-bit Thumb-2 code.  */
 #define TARGET_THUMB2			(TARGET_THUMB && arm_arch_thumb2)
 /* Thumb-1 only.  */
@@ -1053,7 +1053,7 @@ extern const int arm_arch_cde_coproc_bits[];
    functions, or simple tail call functions.  */
 
 #ifndef SUBTARGET_FRAME_POINTER_REQUIRED
-#define SUBTARGET_FRAME_POINTER_REQUIRED 0
+#define SUBTARGET_FRAME_POINTER_REQUIRED (TARGET_26BIT)
 #endif
 
 /* Modes valid for Neon D registers.  */

@@ -3670,6 +3670,18 @@ arm_option_override (void)
   if (TARGET_SOFT_FLOAT && (tune_flags & TF_NO_MODE32))
     flag_schedule_insns = flag_schedule_insns_after_reload = 0;
 
+  /* ARMv2 does not support Thumb, interworking, or VFP.  */
+  if (TARGET_26BIT)
+    {
+      target_flags &= ~MASK_THUMB;
+      target_flags &= ~MASK_INTERWORK;
+      /* Force APCS frame layout for 26-bit code to ensure stack backtracing works. */
+      target_flags |= MASK_APCS_FRAME;
+
+      /* Ensure no unaligned access */
+      unaligned_access = 0;
+    }
+
   /* Override the default structure alignment for AAPCS ABI.  */
   if (!OPTION_SET_P (arm_structure_size_boundary))
     {
@@ -9195,6 +9207,15 @@ thumb_legitimate_offset_p (machine_mode mode, HOST_WIDE_INT val)
 bool
 arm_legitimate_address_p (machine_mode mode, rtx x, bool strict_p, code_helper)
 {
+  if (TARGET_26BIT && mode == HImode && !TARGET_HAVE_LDRH)
+    {
+      /* For ARMv2 HImode (LDRH emulation), we need addresses that are valid for
+	 QImode because we will split the access into two byte accesses.
+	 This is generally restrictive but safe.  */
+      if (!arm_legitimate_address_p (QImode, x, strict_p, code_helper ()))
+	return false;
+    }
+
   if (TARGET_ARM)
     return arm_legitimate_address_outer_p (mode, x, SET, strict_p);
   else if (TARGET_THUMB2)
@@ -21584,6 +21605,26 @@ output_return_instruction (rtx operand, bool really_return, bool reverse,
   gcc_assert (!cfun->calls_alloca || really_return);
 
   sprintf (conditional, "%%?%%%c0", reverse ? 'D' : 'd');
+
+  if (TARGET_26BIT)
+    {
+      if (really_return)
+	{
+	  /* For ARMv2, we must use MOVS to restore flags from LR.  */
+	  static char buff[100];
+	  sprintf (buff, "mov%ss\t%%|pc, %%|lr", conditional);
+	  return buff;
+	}
+      else
+	{
+	  /* If simply copying (not returning), standard MOV is fine,
+	     but return usually implies flag restoration in APCS-26.  */
+	  static char buff[100];
+	  sprintf (buff, "mov%s%s\t%%|pc, %%|lr", conditional,
+		   reverse ? "" : "");
+	  return buff;
+	}
+    }
 
   cfun->machine->return_used_this_function = 1;
 
